@@ -1,4 +1,15 @@
+INSTALLATION
+---------------------------------------------------------------------------------------------------------
+>> choose a platform from http://www.sbcl.org/platform-table.html
+$ cd Downloads/
+$ tar xjf sbcl-1.0.29-x86-darwin-binary-r2.tar.bz2
+$ cd sbcl-1.0.29-x86-darwin
+$ sudo sh install.sh
+
+
+
 THE 99 PROBLEMS OF lISP:
+---------------------------------------------------------------------------------------------------------
 
 URL: http://www.ic.unicamp.br/~meidanis/courses/mc336/2006s2/funcional/L-99_Ninety-Nine_Lisp_Problems.html
 
