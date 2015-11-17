@@ -11,7 +11,7 @@
     (if L
         (if (<= n 0)
             (if Acc
-                (cons (reverse Acc) L)
+                (cons (reverse Acc) (list L))
                 L
             )
             (split-acc (cdr L) (- n 1) (cons (car L) Acc))

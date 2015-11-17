@@ -9,14 +9,17 @@
 
 (defun slice-acc (L start stop Acc)
     (if L
-        (if (<= start 0)
+        (if (<= start 1)
             (if (<= stop 0)
                 (reverse Acc)
                 (slice-acc (cdr L) start (- stop 1) (cons (car L) Acc))
             )
-; todo
+            (slice-acc (cdr L) (- start 1) (- stop 1) Acc)
+        )
+        (reverse Acc)
+    )
 )
 
 (defun slice (L start stop)
-    (defun slice L start stop '())
+    (slice-acc L start stop '())
 )
