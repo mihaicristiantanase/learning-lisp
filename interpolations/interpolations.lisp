@@ -17,6 +17,12 @@
 (defun intersin (x)
   (sin x))
 
+(defun decelerate (x)
+  (- 1 (expt (- 1 x) 2)))
+
+(defun accelerate-decelerate (x)
+  (+ (/ (cos (* (+ x 1) pi)) 2) 0.5))
+
 (defun test-interpolation (f x from to)
   (if (< x 1.0)
     (progn
@@ -25,6 +31,6 @@
       (test-interpolation f (+ x 0.02) from to)
       )))
 
-(test-interpolation #easein-3 0 8 4)
+(test-interpolation #'accelerate-decelerate 0 8 4)
 
 (write-line "")
