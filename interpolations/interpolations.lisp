@@ -1,5 +1,5 @@
 (defun interpolation (f x from to)
-  (let ((v (car (mapcar f (list x)))))
+  (let ((v (funcall f x)))
     (+ (* to v) (* from (- 1.0 v)))))
 
 (defun linear (x)

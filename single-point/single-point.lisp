@@ -2,7 +2,7 @@
   (if (> n 0)
     (progn
       (format t "~F~%" x)
-      (let ((x (car (mapcar f (list x)))))
+      (let ((x (funcall f x)))
         (run f (- n 1) x)))))
 
 (defun sin-cos (x)
