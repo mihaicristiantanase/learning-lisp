@@ -100,8 +100,8 @@ x
 (dolist (x *lst*)
   (format t "~d " x))
 
-(defparameter *array* (make-array '(40)))
-(loop repeat 10000 do
+(defparameter *array* (make-array '(2)))
+(loop repeat 10 do
       (incf (aref *array* (random (length *array*)))))
 (loop for i from 0 below (length *array*) by 1 do
       (format t "~d~%" (aref *array* i)))
