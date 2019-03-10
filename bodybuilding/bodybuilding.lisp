@@ -44,3 +44,7 @@
 (split-sequence "a" "mihai si flory")
 
 (subseq  "mihai si flory" 2 8)
+
+(let ((s "mihai si flory emoji? 🦸"))
+  (dotimes (i (length s))
+    (format t "~2d: ~a~%" i (elt s i))))
