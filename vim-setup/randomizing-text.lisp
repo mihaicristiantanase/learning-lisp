@@ -46,7 +46,12 @@
 
 (shuffle-with-indexes '(a b c d e) '(0 1 4 3 2))
 
-(split "mihai is here, with flory")
+(split "
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+        eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+        voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
+        kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+       ")
 
 (defun rand (text)
   (let ((words (split text)))
