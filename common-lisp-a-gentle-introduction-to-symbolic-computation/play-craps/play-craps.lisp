@@ -1,5 +1,4 @@
 ;;; Play craps
-;;; TODO(mihai): use "member" and "append" functions
 
 (defun throw-die ()
   "Returns a random number between 1 and 6 inclusive."
@@ -17,20 +16,22 @@
   "Returns true if the throw is a (6 6)."
   (equal '(6 6) throw))
 
+(defun throw-sum (throw)
+  "Returns the sum of a dice throw"
+  (+ (first throw) (second throw)))
+
 (defun instant-win-p (throw)
   "Returns true if the throw is 7 or 11."
-  (let ((sum (+ (first throw) (second throw))))
-    (or (equal 7 sum) (equal 11 sum))))
+  (member (throw-sum throw) '(7 11)))
 
 (defun instant-loss-p (throw)
   "Returns true if the throw is 2, 3 or 12."
-  (let ((sum (+ (first throw) (second throw))))
-    (or (equal 2 sum) (equal 3 sum) (equal 12 sum))))
+  (member (throw-sum throw) '(2 3 12)))
 
 (defun say-throw (throw)
   "Returns the sum of the throw or snake-eyes or boxcars when sum is either 2
   or 12."
-  (let ((sum (+ (first throw) (second throw))))
+  (let ((sum (throw-sum throw)))
     (cond ((equal 2 sum) 'snakeeyes)
           ((equal 12 sum) 'boxcars)
           (t sum))))
@@ -38,24 +39,27 @@
 (defun craps ()
   "Returns a play step."
   (let* ((throw (throw-dice))
-         (say (say-throw throw))
-         (fd (first throw))
-         (sd (second throw)))
-    (cond ((instant-win-p throw)
-           (list 'THROW fd 'AND sd '-- say '-- 'YOU 'WIN))
-          ((instant-loss-p throw)
-           (list 'THROW fd 'AND sd '-- say '-- 'YOU 'LOSE))
-          (t (list 'THROW fd 'AND sd '-- 'YOUR 'POINT 'IS say)))))
+         (say (say-throw throw)))
+    (append (list
+              'THROW
+              (first throw)
+              'AND
+              (second throw)
+              '--
+              say
+              '--)
+            (cond ((instant-win-p throw) '(YOU WIN))
+                  ((instant-loss-p throw) '(YOU LOSE))
+                  (t (list 'YOUR 'POINT 'IS say))))))
 
 (defun try-for-point (point)
   "Returns a try for a point."
   (let* ((throw (throw-dice))
-         (fd (first throw))
-         (sd (second throw))
-         (sum (+ fd sd)))
-    (cond ((equal point sum) (list 'THROW fd 'AND sd '-- sum '-- 'YOU 'WIN))
-          ((equal 7 sum) (list 'THROW fd 'AND sd '-- sum '-- 'YOU 'LOSE))
-          (t (list 'THROW fd 'AND sd '-- sum '-- 'THROW 'AGAIN)))))
+         (sum (throw-sum throw)))
+    (append (list 'THROW (first throw) 'AND (second throw) '-- sum '--)
+            (cond ((equal point sum) '(YOU WIN))
+                  ((equal 7 sum) '(YOU LOSE))
+                  (t '(THROW AGAIN))))))
 
 (throw-die)
 (throw-dice)
@@ -67,7 +71,7 @@
 (instant-loss-p '(1 3))
 (say-throw '(1 1))
 (craps)
-(try-for-point 6)
+(try-for-point 9)
 
 (documentation 'throw-die 'function)
 
