@@ -6,7 +6,7 @@
   (cdr (member '-vs- x)))
 
 (defun left-side (x)
-  (reverse (cdr (member '-vs- (reverse x)))))
+  (right-side (reverse x)))
 
 (defun count-common (l r)
   (length (intersection l r)))
@@ -17,12 +17,10 @@
 (defvar l)
 (setf l '(large red shiny cube -vs- small shiny red four-sided pyramid))
 (right-side l)
-
 (right-side '(mihai -vs- flory))
 (left-side l)
 (left-side '(mihai -vs- flory))
 (count-common '(mihai flory) '(flory))
 (count-common '(mihai) '(flory))
 (compare l)
-
 (compare '(small red metal cube -vs- red plastic small cube))
