@@ -1,0 +1,28 @@
+(defparameter books
+  '((war-and-peace . leo-tolstoy)
+    (1984 . george-orwell)
+    (the-great-gatsby . f.-scott-fitzgerald)
+    (to-kill-a-mockingbird . harper-lee)
+    (the-catcher-in-the-rye . j.d.-salinger)
+    (catch-22 . joseph-heller)
+    (animal-farm . george-orwell)
+    (wuthering-heights . emily-brontë)
+    (lord-of-the-flies . william-golding)
+    (great-expectations . charles-dickens)
+    (jane-eyre . charlotte-brontë)
+    (little-women . louisa-may-alcott)
+    (brave-new-world . aldous-huxley)
+    (the-grapes-of-wrath . john-steinbeck)
+    (charlotte's-web . e.b.-white)
+    (crime-and-punishment . fyodor-dostoyevsky)
+    (anna-karenina . leo-tolstoy)
+    (the-handmaid's-tale . margaret-atwood)))
+
+(defun who-wrote (book)
+  (cdr (assoc book books)))
+
+(defun what-wrote (author)
+  (car (rassoc author books)))
+
+(who-wrote 'the-great-gatsby)
+(what-wrote 'george-orwell)
