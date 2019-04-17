@@ -37,3 +37,6 @@ lst
 (defvar text "flory si mihai FYM")
 (loop for lst on (loop for c across text collect c) do
       (format t "~%~{~a~}~%" lst))
+
+(= 3 3.0)
+(= 2.5 5/2)
