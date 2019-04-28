@@ -53,7 +53,23 @@
 (defun high-card (hand)
   ; TODO(mihai): the same value is used, how to fix this?
   (cond ((first-of-rank 'ace hand) (first-of-rank 'ace hand))
+        ((first-of-rank 'king hand) (first-of-rank 'king hand))
+        ((first-of-rank 'queen hand) (first-of-rank 'queen hand))
+        ((first-of-rank 'jack hand) (first-of-rank 'jack hand))
+        ((first-of-rank 10 hand) (first-of-rank 10 hand))
+        ((first-of-rank 9 hand) (first-of-rank 9 hand))
+        ((first-of-rank 8 hand) (first-of-rank 8 hand))
+        ((first-of-rank 7 hand) (first-of-rank 7 hand))
+        ((first-of-rank 6 hand) (first-of-rank 6 hand))
+        ((first-of-rank 5 hand) (first-of-rank 5 hand))
+        ((first-of-rank 4 hand) (first-of-rank 4 hand))
+        ((first-of-rank 3 hand) (first-of-rank 3 hand))
+        ((first-of-rank 2 hand) (first-of-rank 2 hand))
         (t nil)))
+
+(defun high-card-2 (hand)
+  (assoc (find-if #'(lambda (r) (assoc r hand)) (reverse *all-ranks*))
+         hand))
 
 ;; Tests
 
@@ -76,4 +92,10 @@
 
 (first-of-rank '2 *my-hand*)
 
-(high-card *my-hand*)
+(high-card '((3 diamonds)
+             (5 clubs)
+             (2 diamonds)))
+
+(high-card-2 '((king clubs)
+               (5 clubs)
+               (ace diamonds)))
