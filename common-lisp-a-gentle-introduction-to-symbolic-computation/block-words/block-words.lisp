@@ -33,12 +33,12 @@
 (defun match-element (x y)
   (or (equal x y) (equal y '?)))
 
-(defun match-triple (assertion pattern)
-  (every #'match-element assertion pattern))
+(defun match-triple (assertion pat)
+  (every #'match-element assertion pat))
 
-(defun fetch (pattern)
+(defun fetch (pat)
   (remove-if-not
-    #'(lambda (assertion) (match-triple assertion pattern))
+    #'(lambda (assertion) (match-triple assertion pat))
     database))
 
 (defun color-pattern (block)
@@ -99,7 +99,7 @@
 
 (is-cube 'b1)
 
-(supp-cube 'b3)
+(supp-cube 'b4)
 
 (desc1 'b2)
 (desc2 'b2)
