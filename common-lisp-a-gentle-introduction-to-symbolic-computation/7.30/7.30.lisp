@@ -13,4 +13,4 @@
   (mapcar #'(lambda (w sw) (append w (list sw)))
           words spanish-words))
 
-(format t "~{~a~%~}" (tri-dict))
+(format t "~:{~8a ~8a ~8a~%~}" (tri-dict))
