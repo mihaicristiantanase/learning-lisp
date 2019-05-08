@@ -246,3 +246,46 @@
 (atoms-to-q '(1 2 (a b (1 mihai 99))))
 
 (atoms-to-q '(1 a (mihai)))
+
+;; 8.39
+(defun count-atoms (tree)
+  (cond ((atom tree) 1)
+        (t (+ (count-atoms (car tree)) (count-atoms (cdr tree))))))
+
+(count-atoms '(a (b) c))
+
+;; 8.40
+(defun count-cons (tree)
+  (cond ((atom tree) 0)
+        (t (+ 1 (count-cons (car tree)) (count-cons (cdr tree))))))
+
+(count-cons 'a)
+(count-cons '(a))
+(count-cons '(a b))
+(count-cons '(a b c))
+(count-cons '((a)))
+(count-cons '((a)))
+
+;; 8.41
+(defun sum-tree (tree)
+  (cond ((numberp tree) tree)
+        ((not (listp tree)) 0)
+        ((null tree) 0)
+        (t (+ (sum-tree (car tree)) (sum-tree (cdr tree))))))
+
+(sum-tree '())
+(sum-tree '(a b c))
+(sum-tree '(a b 1 c))
+(sum-tree '(a b 1 c 9 10))
+(sum-tree '((3 bears) (3 bowls) (1 girl)))
+
+;; 8.42
+(defun my-subst (d s l)
+  (cond ((null l) nil)
+        ((equal s l) d)
+        ((not (listp l)) l)
+        (t (cons (my-subst d s (car l)) (my-subst d s (cdr l))))))
+
+(my-subst 'z 'a '((mihai a)))
+
+(my-subst 'z 'a '(a b c d (mihai a) (flory (a))))
