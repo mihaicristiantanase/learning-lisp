@@ -250,14 +250,17 @@
 ;; 8.39
 (defun count-atoms (tree)
   (cond ((atom tree) 1)
-        (t (+ (count-atoms (car tree)) (count-atoms (cdr tree))))))
+        (t (+ (count-atoms (car tree))
+              (count-atoms (cdr tree))))))
 
 (count-atoms '(a (b) c))
 
 ;; 8.40
 (defun count-cons (tree)
   (cond ((atom tree) 0)
-        (t (+ 1 (count-cons (car tree)) (count-cons (cdr tree))))))
+        (t (+ 1
+              (count-cons (car tree))
+              (count-cons (cdr tree))))))
 
 (count-cons 'a)
 (count-cons '(a))
@@ -269,9 +272,9 @@
 ;; 8.41
 (defun sum-tree (tree)
   (cond ((numberp tree) tree)
-        ((not (listp tree)) 0)
-        ((null tree) 0)
-        (t (+ (sum-tree (car tree)) (sum-tree (cdr tree))))))
+        ((atom tree) 0)
+        (t (+ (sum-tree (car tree))
+              (sum-tree (cdr tree))))))
 
 (sum-tree '())
 (sum-tree '(a b c))
@@ -281,10 +284,10 @@
 
 ;; 8.42
 (defun my-subst (d s l)
-  (cond ((null l) nil)
-        ((equal s l) d)
-        ((not (listp l)) l)
-        (t (cons (my-subst d s (car l)) (my-subst d s (cdr l))))))
+  (cond ((equal s l) d)
+        ((atom l) l)
+        (t (cons (my-subst d s (car l))
+                 (my-subst d s (cdr l))))))
 
 (my-subst 'z 'a '((mihai a)))
 
