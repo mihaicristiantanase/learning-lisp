@@ -292,3 +292,57 @@
 (my-subst 'z 'a '((mihai a)))
 
 (my-subst 'z 'a '(a b c d (mihai a) (flory (a))))
+
+;; 8.43
+(defun flatten (tree)
+  (cond ((null tree) nil)
+        ((atom tree) (list tree))
+        (t (append (flatten (car tree)) (flatten (cdr tree))))))
+
+(flatten '())
+(flatten '(a))
+(flatten '(a b))
+(flatten '(a (b)))
+(flatten '((a) b))
+(flatten '((a) (b)))
+(flatten '((a b (r)) a c (a d ((a (b)) r) a)))
+(flatten '((a b (r . z)) a c (a d ((a (b)) r) a)))
+
+(cons (cons '(a . b) 'c) 'd)
+
+;; 8.44
+(defun tree-depth (tree)
+  (cond ((atom tree) 0)
+        (t (let ((d1 (1+ (tree-depth (car tree))))
+                 (d2 (1+ (tree-depth (cdr tree)))))
+             (if (> d1 d2) d1 d2)))))
+
+(tree-depth '(a . b))
+(tree-depth '(a b))
+(tree-depth '(a b c d))
+(tree-depth '((a b c d)))
+(tree-depth '((b)))
+(tree-depth '((a . b) (c . d)))
+(tree-depth '((a . b) . (c . d)))
+
+(cons (cons 'a 'b) (cons 'c 'd))
+(cons (cons 'a 'b) (cons (cons 'c 'd) nil)) 
+
+;; 8.45
+(defun paren-depth (tree)
+  (cond ((atom tree) 1)
+        (t (let* ((left (car tree))
+                  (right (cdr tree))
+                  (counter (if (consp left) 1 0))
+                  (d1 (+ counter (paren-depth left)))
+                  (d2 (paren-depth right)))
+             (if (> d1 d2) d1 d2)))))
+
+(paren-depth '(a b c))
+(paren-depth '(a (b) c))
+(paren-depth '(a ((b)) c))
+(paren-depth '(a b ((c) d) e))
+
+; (cons (cons (cons ...))) -> 3 level
+; (cons . (cons . (cons . ...) -> 1 level
+; so, "cons" on the car position counts as 1 parenthesis
