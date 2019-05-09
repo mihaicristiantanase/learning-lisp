@@ -313,9 +313,8 @@
 ;; 8.44
 (defun tree-depth (tree)
   (cond ((atom tree) 0)
-        (t (let ((d1 (1+ (tree-depth (car tree))))
-                 (d2 (1+ (tree-depth (cdr tree)))))
-             (if (> d1 d2) d1 d2)))))
+        (t (1+ (max (tree-depth (car tree))
+                    (tree-depth (cdr tree)))))))
 
 (tree-depth '(a . b))
 (tree-depth '(a b))
@@ -330,13 +329,9 @@
 
 ;; 8.45
 (defun paren-depth (tree)
-  (cond ((atom tree) 1)
-        (t (let* ((left (car tree))
-                  (right (cdr tree))
-                  (counter (if (consp left) 1 0))
-                  (d1 (+ counter (paren-depth left)))
-                  (d2 (paren-depth right)))
-             (if (> d1 d2) d1 d2)))))
+  (cond ((atom tree) 0)
+        (t (max (1+ (paren-depth (car tree)))
+                 (paren-depth (cdr tree))))))
 
 (paren-depth '(a b c))
 (paren-depth '(a (b) c))
