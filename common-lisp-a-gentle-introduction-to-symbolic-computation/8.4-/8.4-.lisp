@@ -341,3 +341,82 @@
 ; (cons (cons (cons ...))) -> 3 level
 ; (cons . (cons . (cons . ...) -> 1 level
 ; so, "cons" on the car position counts as 1 parenthesis
+
+;; 8.46
+(defun count-up (n)
+  (cond ((zerop n) nil)
+        (t (append (count-up (1- n)) (list n)))))
+
+(count-up 5)
+(count-up 0)
+
+;; 8.47
+(defun make-loaf (n)
+  (if (zerop n)
+    nil
+    (cons 'x (make-loaf (1- n)))))
+
+(make-loaf 4)
+(make-loaf 0)
+
+;; 8.48
+(defun bury (x n)
+  (cond ((<= n 0) x)
+        (t (list (bury x (1- n))))))
+
+(bury 'fred 2)
+(bury 'fred 4)
+
+;; 8.49
+(defun pairings (x y)
+  (cond ((null x) nil)
+        (t (cons (list (car x) (car y)) (pairings (cdr x) (cdr y))))))
+
+(pairings '(a b c) '(1 2 3))
+
+;; 8.50
+(defun sublists (l)
+  (cond ((null l) nil)
+        (t (cons l (sublists (cdr l))))))
+
+(sublists '(fee fie foe))
+
+;; 8.51
+(defun my-reverse-recursive (l acc)
+  (cond ((null l) acc)
+        (t (my-reverse-recursive (cdr l) (cons (car l) acc)))))
+
+(defun my-reverse (l)
+  (my-reverse-recursive l '()))
+
+(my-reverse '(1 2 3 4))
+(my-reverse '())
+
+;; 8.52
+(defun my-union (x y)
+  (cond ((null x) y)
+        (t (if (member (first x) y)
+             (my-union (rest x) y)
+             (my-union (rest x) (cons (first x) y))))))
+
+(my-union '(1 2 3 4) '(a b c 1 2 3))
+
+;; 8.53
+(defun largest-even (l)
+  (cond ((null l) 0)
+        ((numberp l) (if (evenp l) l 0))
+        (t (max (largest-even (car l)) (largest-even (cdr l))))))
+
+(largest-even '(5 2 4 3))
+
+;; 8.54
+(defun huge-recursive (n counter)
+  (cond ((>= counter n) 1)
+        (t (* n (huge-recursive n (1+ counter))))))
+
+(defun huge (n)
+  (huge-recursive n 0))
+
+(huge 2)
+(huge 3)
+(huge 4)
