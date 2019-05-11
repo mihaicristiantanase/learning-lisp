@@ -1,3 +1,5 @@
+;;; Plot the exercises found in the hardcoded CSV file
+
 (defvar *filename* "~/workspace/body_building/double_progression.csv")
 (defun load-file (fname)
   (with-open-file (in fname)
@@ -37,14 +39,20 @@
   (let ((dict (make-dictionary keys values)))
     (format t "~%~{~a:~12t~a~%~}" dict)))
 
-(values '(1 2 3))
-(describe #'values)
-(describe #'intern)
+(defun split-sequence (sep seq)
+  (let ((out '())
+        (cseq ""))
+    ;; TODO(mihai): fix this
+    (dotimes (i (length seq)) (print (aref seq i))))
 
-(split-sequence "a" "mihai si flory")
+(split-sequence ";" "mihai;si;flory;;")
+; Should return the list ("mihai" "si" "flory" "" "")
 
 (subseq  "mihai si flory" 2 8)
 
 (let ((s "mihai si flory emoji? 🦸"))
   (dotimes (i (length s))
     (format t "~2d: ~a~%" i (elt s i))))
+
+(let ((seq "mihai is "))
+      (dotimes (i (length seq)) (print (aref seq i))))
