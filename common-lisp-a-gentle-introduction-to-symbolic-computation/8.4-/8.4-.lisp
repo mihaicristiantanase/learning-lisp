@@ -420,3 +420,47 @@
 (huge 2)
 (huge 3)
 (huge 4)
+
+;; 8.56
+(defun every-other (l)
+  (cond ((null l) nil)
+        (t (cons (first l) (every-other (rest (rest l)))))))
+
+(every-other '(a b c d e f))
+(every-other '(i came i saw i conquered))
+(every-other '(i am))
+(every-other '(am))
+(every-other '())
+
+;; 8.57
+(defun left-half-rec (l n)
+  (cond ((or (null l) (zerop n)) nil)
+        (t (cons (first l) (left-half-rec (rest l) (1- n))))))
+
+(defun left-half (l)
+  (left-half-rec l (/ (length l) 2)))
+
+(left-half '(a b c d))
+(left-half '(a b c))
+(left-half '(a b))
+
+;; 8.58
+(defun merge-lists (x y)
+  (cond ((null x) y)
+        ((null y) x)
+        ((<= (first x) (first y))
+         (cons (first x) (merge-lists (rest x) y)))
+        (t (cons (first y) (merge-lists x (rest y))))))
+
+(merge-lists '(1 2 6 8 10 12) '(2 3 5 9 13))
+
+;; 8.59 -- cannot write the recursive version of factorial defined:
+;;         fact(0) = 1
+;;         fact(n) = fact(n+1) / (n+1)
+(defun fact-rec (n counter)
+  ;; ??
+  (/ (fact-rec n (1+ counter) (1+ counter))))
+
+(defun fact (n)
+  ;; ??
+  (fact-rec (n 0)))
