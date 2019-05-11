@@ -464,3 +464,9 @@
 (defun fact (n)
   ;; ??
   (fact-rec (n 0)))
+
+(defun fact (n)
+  (cond ((zerop n) (break "N is zero."))
+        (t (* n (fact (1- n))))))
+
+(fact 5)
