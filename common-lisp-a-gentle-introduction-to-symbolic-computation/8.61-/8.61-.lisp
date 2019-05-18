@@ -114,11 +114,11 @@
 (legalp '(a b c d e))
 
 ;; 8.68
-"NIL is a proper list and any cons cell whose cdr is a proper list."
+; "NIL is a proper list and any cons cell whose cdr is a proper list."
 
 ;; 8.69
-"An positive integer greater than 1 is a prime (if divisible only by itself
-and 1) or a product of a prime and a positive integer greater than 1."
+; "An positive integer greater than 1 is a prime (if divisible only by itself
+; and 1) or a product of a prime and a positive integer greater than 1."
 
 ;; 8.70
 (defun factors-help (n p)
@@ -138,3 +138,19 @@ and 1) or a product of a prime and a positive integer greater than 1."
 (defun factors-tree (n) (factors-tree-help n 2))
 
 (factors-tree 60)
+
+;; 8.71
+(ql:system-apropos "draw")
+(ql:quickload "draw-cons-tree")
+
+(draw-cons-tree:draw-tree '(a b (c d) e))
+
+; All and NIL are terminal nodes.
+; Drawing (turn this 45°)
+; [o|o]---[o|o]---[o|o]---[o|/]
+;  |       |       |       |
+;  A       B       |       E
+;                  |
+;                 [o|o]---[o|/]
+;                  |       |
+;                  C       D
