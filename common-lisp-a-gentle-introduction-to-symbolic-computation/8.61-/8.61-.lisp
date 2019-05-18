@@ -131,10 +131,9 @@ and 1) or a product of a prime and a positive integer greater than 1."
 (factors 60)
 
 (defun factors-tree-help (n p)
-  (cond ((equal n 1) nil)
+  (cond ((equal n p) n)
         ((zerop (rem n p))
-         (let ((lst (factors-tree-help (/ n p) p)))
-           (if (null lst) (list n p) (list n p lst))))
+         (list n p (factors-tree-help (/ n p) p)))
         (t (factors-tree-help n (1+ p)))))
 (defun factors-tree (n) (factors-tree-help n 2))
 
