@@ -93,13 +93,8 @@
 ;; 8.66
 (defun arith-eval (expr)
   (cond ((numberp expr) expr)
-        (t (let ((op1 (arith-eval (first expr)))
-                 (op (second expr))
-                 (op2 (arith-eval (third expr))))
-             (cond ((equal '+ op) (+ op1 op2))
-                   ((equal '- op) (- op1 op2))
-                   ((equal '* op) (* op1 op2))
-                   ((equal '/ op) (/ op1 op2))
-                   (t 0))))))
+        (t (funcall (second expr)
+                    (arith-eval (first expr))
+                    (arith-eval (third expr))))))
 
 (arith-eval '(2 + (3 * 4)))
