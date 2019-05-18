@@ -98,3 +98,44 @@
                     (arith-eval (third expr))))))
 
 (arith-eval '(2 + (3 * 4)))
+
+;; 8.67
+(defun legalp (expr)
+  (cond ((numberp expr) t)
+        (t (and (listp expr)
+                (equal 3 (length expr))
+                (member (second expr) '(+ - * /))
+                (legalp (first expr))
+                (legalp (third expr))))))
+
+(legalp 4)
+(legalp '((2 * 2) - 3))
+(legalp '())
+(legalp '(a b c d e))
+
+;; 8.68
+"NIL is a proper list and any cons cell whose cdr is a proper list."
+
+;; 8.69
+"An positive integer greater than 1 is a prime (if divisible only by itself
+and 1) or a product of a prime and a positive integer greater than 1."
+
+;; 8.70
+(defun factors-help (n p)
+  (cond ((equal n 1) nil)
+        ((zerop (rem n p))
+         (cons p (factors-help (/ n p) p)))
+        (t (factors-help n (1+ p)))))
+(defun factors (n) (factors-help n 2))
+
+(factors 60)
+
+(defun factors-tree-help (n p)
+  (cond ((equal n 1) nil)
+        ((zerop (rem n p))
+         (let ((lst (factors-tree-help (/ n p) p)))
+           (if (null lst) (list n p) (list n p lst))))
+        (t (factors-tree-help n (1+ p)))))
+(defun factors-tree (n) (factors-tree-help n 2))
+
+(factors-tree 60)
