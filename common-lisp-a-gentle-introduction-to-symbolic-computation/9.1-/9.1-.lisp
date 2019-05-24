@@ -40,13 +40,13 @@
 
 ;; 9.5
 (defun print-board-line (line)
-  (format t "~a | ~a | ~a ~%"
+  (format t " ~a | ~a | ~a ~%"
           (first line)
           (second line)
           (third line)))
 
 (defun print-board-sep ()
-  (format t "~&---------~%"))
+  (format t "~&----------~%"))
 
 (defun print-board (board)
   (let ((b (sublis '((x . " X ")
