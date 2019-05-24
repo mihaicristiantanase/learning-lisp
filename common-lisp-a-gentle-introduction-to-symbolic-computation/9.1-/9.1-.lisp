@@ -49,9 +49,9 @@
   (format t "~&----------~%"))
 
 (defun print-board (board)
-  (let ((b (sublis '((x . " X ")
-                     (o . " O ")
-                     (nil . "   ")) board)))
+  (let ((b (sublis '((x . "X")
+                     (o . "O")
+                     (nil . " ")) board)))
     (print-board-line b)
     (print-board-sep)
     (print-board-line (nthcdr 3 b))
