@@ -59,3 +59,26 @@
     (print-board-line (nthcdr 6 b))))
 
 (print-board '(x o o nil x nil o nil x))
+
+;; 9.6
+(defun gross-pay ()
+  (format t "Please set the hourly wage ($): ~%")
+  (let ((rate (read)))
+    (format t "Please set the number of hours worked: ~%")
+    (let ((hours (read)))
+      (format t "Payment: $~a~%" (* rate hours)))))
+
+(gross-pay)
+
+;; 9.7
+(defun cookie-monster ()
+  (format t "Give men cookie!!!~%")
+  (format t "Cookie?")
+  (let ((x (read)))
+    (if (equal 'cookie x)
+      (format t "Thank you!...Munch munnch munch...BURP~%")
+      (progn
+        (format t "No want ~a...~%" x)
+        (cookie-monster)))))
+
+(cookie-monster)
