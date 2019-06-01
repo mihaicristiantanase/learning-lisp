@@ -149,3 +149,46 @@
                (mapcar fun (generate x-start x-end))))
 
 (make-graph-hardcoded 'square -7 7 "*******")
+
+;; DRIBBLE
+(dribble "/tmp/mihai-dribbling.log")
+
+(square 5)
+
+(format t "do something here!~%~%~%")
+
+(dribble)
+
+;; 9.11
+(defun dot-prin1 (lst)
+  (labels ((dot-prin1-str (lst)
+                          (cond ((atom lst) (format nil "~a" lst))
+                                ((null lst) nil)
+                                (t (format nil "(~a . ~a)"
+                                           (dot-prin1-str (car lst)) (dot-prin1-str (rest lst)))))))
+    (format t "~a~%" (dot-prin1-str lst))))
+
+(dot-prin1 '(a (b) c))
+(dot-prin1 '(a c))
+(dot-prin1 '(a))
+(dot-prin1 '())
+(dot-prin1 '((((a)))))
+
+;; 9.12
+;; '(a . nil) → generates the cons cell with car = a and cdr = nil
+;; '(a . b) → generates the cons cell with car = a and cdr = b
+
+;; 9.13
+(defun hybrid-prin1 (lst)
+  (cond ((atom lst) (format t "~a" lst))
+        ((null lst) nil)
+        (t (format t "(")
+           (hybrid-prin1 (car lst))
+           (format t " . ")
+           (hybrid-prin1 (cdr lst))
+           (format t ")"))))
+;; ............................................
+
+(hybrid-prin1 '(a (b) c))
+(hybrid-prin1 '(a c))
+;; OBS(mihai): not completed due to not being interested in the solution
