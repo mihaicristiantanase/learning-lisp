@@ -92,8 +92,8 @@
 ;; 9.10
 (defun space-over (n)
   (cond ((< n 0) (format t "Error!"))
-        ((= n 0) nil)
-        ((> n 0) (format t " ") (space-over (1- n)))))
+        ((zerop n) nil)
+        (t (format t " ") (space-over (1- n)))))
 
 (defun test (n)
   (format t "~%>>>")
@@ -111,9 +111,8 @@
 (plot-one-point ">" 3)
 
 (defun plot-points (plotting-string y-vals)
-  (when (not (null y-vals))
-    (plot-one-point plotting-string (first y-vals))
-    (plot-points plotting-string (rest y-vals))))
+  (mapcar #'(lambda (x)
+              (plot-one-point plotting-string x)) y-vals))
 
 (plot-points "< >" '(4 6 8 10 8 6 4))
 
@@ -131,19 +130,22 @@
 (defun square (n) (* n n))
 
 (defun make-graph ()
-  (format t "Function to graph? ")
+  (let ((fun (prompt-for "Function to graph? "))
+        (x-start (prompt-for "Starting x value? "))
+        (x-end (prompt-for "Ending x value? "))
+        (plotting-string (prompt-for "Plotting string? ")))
+    (plot-points plotting-string 
+                 (mapcar fun (generate x-start x-end)))))
+
+(defun prompt-for (msg)
+  (format t "~a" msg)
   (finish-output)
-  (let ((fun (read)))
-    (format t "Starting x value? ")
-    (finish-output)
-    (let ((x-start (read)))
-      (format t "Ending x value? ")
-      (finish-output)
-      (let ((x-end (read)))
-        (format t "Plotting string? ")
-        (finish-output)
-        (let ((plotting-string (read)))
-          (plot-points plotting-string 
-                       (mapcar fun (generate x-start x-end))))))))
+  (read))
 
 (make-graph)
+
+(defun make-graph-hardcoded (fun x-start x-end plotting-string)
+  (plot-points plotting-string 
+               (mapcar fun (generate x-start x-end))))
+
+(make-graph-hardcoded 'square -7 7 "*******")
