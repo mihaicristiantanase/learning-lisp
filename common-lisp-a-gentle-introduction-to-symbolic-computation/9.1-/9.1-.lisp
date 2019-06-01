@@ -62,7 +62,7 @@
 
 ;; 9.6
 (defun gross-pay ()
-  (format t "Please set the hourly wage ($): ~%")
+  (format t "Please set the hourly wage ($): ")
   (let ((rate (read)))
     (format t "Please set the number of hours worked: ~%")
     (let ((hours (read)))
@@ -82,3 +82,68 @@
         (cookie-monster)))))
 
 (cookie-monster)
+
+(if (yes-or-no-p "Do you want to be good?")
+  (format t "Than just be good!~%")
+  (format t "Why are you asking, than?!~%"))
+
+*terminal-io*
+
+;; 9.10
+(defun space-over (n)
+  (cond ((< n 0) (format t "Error!"))
+        ((= n 0) nil)
+        ((> n 0) (format t " ") (space-over (1- n)))))
+
+(defun test (n)
+  (format t "~%>>>")
+  (space-over n)
+  (format t "<<<"))
+
+(test 4)
+(test 30)
+
+(defun plot-one-point (plotting-string y-val)
+  (space-over y-val)
+  (format t "~a~%" plotting-string))
+
+(plot-one-point "a" 3)
+(plot-one-point ">" 3)
+
+(defun plot-points (plotting-string y-vals)
+  (when (not (null y-vals))
+    (plot-one-point plotting-string (first y-vals))
+    (plot-points plotting-string (rest y-vals))))
+
+(plot-points "< >" '(4 6 8 10 8 6 4))
+
+(defun generate (m n)
+  (labels ((generate-acc (m n acc)
+                         (if (> m n)
+                           acc
+                           (generate-acc (1+ m) n (append acc (list m))))))
+    (generate-acc m n '())))
+
+(generate -3 5)
+(generate 8 5)
+(generate 5 5)
+
+(defun square (n) (* n n))
+
+(defun make-graph ()
+  (format t "Function to graph? ")
+  (finish-output)
+  (let ((fun (read)))
+    (format t "Starting x value? ")
+    (finish-output)
+    (let ((x-start (read)))
+      (format t "Ending x value? ")
+      (finish-output)
+      (let ((x-end (read)))
+        (format t "Plotting string? ")
+        (finish-output)
+        (let ((plotting-string (read)))
+          (plot-points plotting-string 
+                       (mapcar fun (generate x-start x-end))))))))
+
+(make-graph)
