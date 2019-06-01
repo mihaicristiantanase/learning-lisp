@@ -91,9 +91,11 @@
 
 ;; 9.10
 (defun space-over (n)
-  (cond ((< n 0) (format t "Error!"))
-        ((zerop n) nil)
-        (t (format t " ") (space-over (1- n)))))
+  (labels ((space-over-int (n)
+                           (cond ((< n 0) (format t "Error!"))
+                                 ((zerop n) nil)
+                                 (t (format t " ") (space-over (1- n))))))
+    (space-over-int (truncate n))))
 
 (defun test (n)
   (format t "~%>>>")
@@ -129,6 +131,9 @@
 
 (defun square (n) (* n n))
 
+(defun good-sin (n)
+  (* 10 (+ 1.5 (sin (* n 0.4)))))
+
 (defun make-graph ()
   (let ((fun (prompt-for "Function to graph? "))
         (x-start (prompt-for "Starting x value? "))
@@ -148,7 +153,7 @@
   (plot-points plotting-string 
                (mapcar fun (generate x-start x-end))))
 
-(make-graph-hardcoded 'square -7 7 "*******")
+(make-graph-hardcoded 'good-sin -40 40 "***")
 
 ;; DRIBBLE
 (dribble "/tmp/mihai-dribbling.log")
