@@ -50,18 +50,39 @@
     (or (member (* 3 *computer*) sums)
         (member (* 3 *opponent*) sums))))
 
-(defun play-one-game ()
-  (if (y-or-n-p "Would you like to go first? ")
-    (opponent-move (make-board))
-    (computer-move (make-board))))
+(defun pick-random-empty-position (board)
+  (let ((pos (+ 1 (random 9))))
+    (if (zerop (nth pos board))
+      pos
+      (pick-random-empty-position board))))
 
-(defun opponent-move (board)
-  (let* ((pos (read-a-legal-move board))
-         (new-board (make-move *opponent* pos board)))
-    (print-board new-board)
-    (cond ((winner-p new-board) (format t "~&You win!"))
-          ((board-full-p new-board) (format t "~&Tie game."))
-          (t (computer-move new-board)))))
+(defun board-full-p (board)
+  (null (member 0 board)))
+
+(defun find-empty-position (board triplet)
+  (find-if #'(lambda (pos) (zerop (nth pos board))) triplet))
+
+(defun win-or-block (board target-sum)
+  (let ((triplet (find-if #'(lambda (trip)
+                              (equal (sum-triplet board trip) target-sum))
+                          *triplets*)))
+    (when triplet (find-empty-position board triplet))))
+
+(defun make-three-in-a-row (board)
+  (let ((pos (win-or-block board (* 2 *computer*))))
+    (and pos (list pos "make three in a row"))))
+
+(defun block-opponent-win (board)
+  (let ((pos (win-or-block board (* 2 *opponent*))))
+    (and pos (list pos "block opponent"))))
+
+(defun random-move-strategy (board)
+  (list (pick-random-empty-position board) "random move"))
+
+(defun choose-best-move (board)
+  (or (make-three-in-a-row board)
+      (block-opponent-win board)
+      (random-move-strategy board)))
 
 (defun read-a-legal-move (board)
   (format t "~&Your move: ")
@@ -73,6 +94,14 @@
            (format t "~&That position is already occupied.")
            (read-a-legal-move board))
           (t pos))))
+
+(defun opponent-move (board)
+  (let* ((pos (read-a-legal-move board))
+         (new-board (make-move *opponent* pos board)))
+    (print-board new-board)
+    (cond ((winner-p new-board) (format t "~&You win!"))
+          ((board-full-p new-board) (format t "~&Tie game."))
+          (t (computer-move new-board)))))
 
 (defun computer-move (board)
   (let* ((best-move (choose-best-move board))
@@ -86,39 +115,10 @@
           ((board-full-p new-board) (format t "~&Tie game."))
           (t (opponent-move new-board)))))
 
-(defun choose-best-move (board)
-  (or (make-three-in-a-row board)
-      (block-opponent-win board)
-      (random-move-strategy board)))
-
-(defun random-move-strategy (board)
-  (list (pick-random-empty-position board) "random move"))
-
-(defun pick-random-empty-position (board)
-  (let ((pos (+ 1 (random 9))))
-    (if (zerop (nth pos board))
-      pos
-      (pick-random-empty-position board))))
-
-(defun board-full-p (board)
-  (null (member 0 board)))
-
-(defun make-three-in-a-row (board)
-  (let ((pos (win-or-block board (* 2 *computer*))))
-    (and pos (list pos "make three in a row"))))
-
-(defun block-opponent-win (board)
-  (let ((pos (win-or-block board (* 2 *opponent*))))
-    (and pos (list pos "block opponent"))))
-
-(defun win-or-block (board target-sum)
-  (let ((triplet (find-if #'(lambda (trip)
-                              (equal (sum-triplet board trip) target-sum))
-                          *triplets*)))
-    (when triplet (find-empty-position board triplet))))
-
-(defun find-empty-position (board triplet)
-  (find-if #'(lambda (pos) (zerop (nth pos board))) triplet))
+(defun play-one-game ()
+  (if (y-or-n-p "Would you like to go first? ")
+    (opponent-move (make-board))
+    (computer-move (make-board))))
 
 ;; tests
 (defparameter b (make-board))
