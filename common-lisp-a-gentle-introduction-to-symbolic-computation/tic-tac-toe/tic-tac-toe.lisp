@@ -4,6 +4,11 @@
 
 (defvar *opponent* 1)
 (defvar *computer* 10)
+(defvar *corners* '(1 3 7 9))
+(defvar *sides*
+  '((1 2 3) (3 6 9) (7 8 9) (1 4 7)))
+(defvar *diagonals*
+  '((1 5 9) (3 5 7)))
 
 (defvar *triplets*
   '((1 2 3) (4 5 6) (7 8 9)
@@ -62,25 +67,36 @@
 (defun find-empty-position (board triplet)
   (find-if #'(lambda (pos) (zerop (nth pos board))) triplet))
 
+(defun random-move-strategy (board)
+  (list (pick-random-empty-position board) "random move"))
+
+(defun block-opponent-win (board)
+  (let ((pos (win-or-block board (* 2 *opponent*))))
+    (and pos (list pos "block opponent"))))
+
+(defun make-three-in-a-row (board)
+  (let ((pos (win-or-block board (* 2 *computer*))))
+    (and pos (list pos "make three in a row"))))
+
 (defun win-or-block (board target-sum)
   (let ((triplet (find-if #'(lambda (trip)
                               (equal (sum-triplet board trip) target-sum))
                           *triplets*)))
     (when triplet (find-empty-position board triplet))))
 
-(defun make-three-in-a-row (board)
-  (let ((pos (win-or-block board (* 2 *computer*))))
-    (and pos (list pos "make three in a row"))))
+(defun extract-diagonal (board diag)
+  (mapcar )
+             ;; TODO(mihai): fix this
 
-(defun block-opponent-win (board)
-  (let ((pos (win-or-block board (* 2 *opponent*))))
-    (and pos (list pos "block opponent"))))
-
-(defun random-move-strategy (board)
-  (list (pick-random-empty-position board) "random move"))
+(defun block-squeeze-play (board)
+  (let ((pattern (list *opponent* *computer* *opponent*)))
+    (when (member pattern
+             (mapcar "#(lambda (diag) (extract-diagonal board diag))
+             ;; TODO(mihai): fix this
 
 (defun choose-best-move (board)
-  (or (make-three-in-a-row board)
+  (or (block-squeeze-play board)
+      (make-three-in-a-row board)
       (block-opponent-win board)
       (random-move-strategy board)))
 
