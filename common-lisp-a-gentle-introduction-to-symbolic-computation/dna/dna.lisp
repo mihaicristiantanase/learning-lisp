@@ -12,11 +12,7 @@
 ;; "double helix" form)
 
 (defun complement-base (base)
-  (cond ((equal base 'A) 'T)
-        ((equal base 'T) 'A)
-        ((equal base 'G) 'C)
-        ((equal base 'C) 'G)
-        (t nil)))
+  (second (assoc base '((A T) (T A) (G C) (C G)))))
 
 (defun complement-strand (strand)
   (mapcar #'complement-base strand))
@@ -62,25 +58,23 @@
     (let ((candidate (prefix (+ 1 l) strand)))
       (when (coverp candidate strand) (return candidate)))))
 
-(defun draw-dna-line (n f)
-  (format t "~&")
-  (dotimes (i n) (format t (funcall f i))))
-
-(defun format-base (base)
-  (format nil "  ~a   " base))
-
 (defun draw-dna (strand)
-  (let ((l (length strand))
-        (complement (complement-strand strand)))
-    (draw-dna-line l #'(lambda (i) "------"))
-    (draw-dna-line l #'(lambda (i) "  !   "))
-    (draw-dna-line l #'(lambda (i) (format-base (nth i strand))))
-    (draw-dna-line l #'(lambda (i) "  ·   "))
-    (draw-dna-line l #'(lambda (i) "  ·   "))
-    (draw-dna-line l #'(lambda (i) (format-base (nth i complement))))
-    (draw-dna-line l #'(lambda (i) "  !   "))
-    (draw-dna-line l #'(lambda (i) "------"))
-    (format t "~&")))
+  (labels ((draw-dna-line (n f)
+                          (format t "~&")
+                          (dotimes (i n) (format t (funcall f i))))
+           (format-base (base)
+                        (format nil "  ~a   " base)))
+    (let ((l (length strand))
+          (complement (complement-strand strand)))
+      (draw-dna-line l #'(lambda (i) "------"))
+      (draw-dna-line l #'(lambda (i) "  !   "))
+      (draw-dna-line l #'(lambda (i) (format-base (nth i strand))))
+      (draw-dna-line l #'(lambda (i) "  ·   "))
+      (draw-dna-line l #'(lambda (i) "  ·   "))
+      (draw-dna-line l #'(lambda (i) (format-base (nth i complement))))
+      (draw-dna-line l #'(lambda (i) "  !   "))
+      (draw-dna-line l #'(lambda (i) "------"))
+      (format t "~&"))))
 
 ;; Tests
 
@@ -116,3 +110,6 @@
 (kernel '(A G G T C))
 
 (draw-dna '(A T G C))
+(draw-dna '(A G C A G C A G C))
+
+(draw-dna '(A G C A G C A G C C A G C A G C))
