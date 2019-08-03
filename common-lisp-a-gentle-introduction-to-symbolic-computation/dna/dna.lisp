@@ -76,6 +76,25 @@
       (draw-dna-line l #'(lambda (i) "------"))
       (format t "~&"))))
 
+(defparameter bases '(A T G C))
+
+(defun generate-dna (n)
+    (do ((lb (length bases))
+         (dna '())
+         (i 0 (1+ i)))
+      ((>= i n) dna)
+      (push (nth (random lb) bases) dna)))
+
+(defun test-kernel ()
+  (do* ((l-dna (+ 1 (random 3000)))
+        (dna (generate-dna l-dna))
+        (k (kernel dna))
+        (l-k (length k))
+        (i 0 (1+ i)))
+    ((>= i 1000000) 'done)
+    (when (< l-k l-dna)
+      (format t "~&DNA of length ~a has kernel of length ~a" l-dna l-k))))
+
 ;; Tests
 
 (complement-base 'A)
@@ -113,3 +132,11 @@
 (draw-dna '(A G C A G C A G C))
 
 (draw-dna '(A G C A G C A G C C A G C A G C))
+
+(time (draw-dna '(A G C A G C A G C C A G C A G C)))
+
+;; Time
+(generate-dna 30)
+(test-kernel)
+
+(time (test-kernel))
