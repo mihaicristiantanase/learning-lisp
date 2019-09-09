@@ -85,4 +85,4 @@
       (format t "~&Should run as ~A <path-to-file>~&" (first args))
       (exit))))
 
-(run *posix-argv*)
+(defun main () (run *posix-argv*))
