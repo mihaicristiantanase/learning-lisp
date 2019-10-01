@@ -52,6 +52,17 @@
 (defun two-equal (candidate tfs)
   (n-equal 2 candidate tfs))
 
+(defun palindom (candidate tfs)
+  (declare (ignore tfs))
+  (string= candidate (reverse candidate)))
+
+(defun repeating (candidate tfs)
+  (declare (ignore tfs))
+  (let* ((colon-pos (position #\: candidate))
+         (hour (subseq candidate 0 colon-pos))
+         (minute (subseq candidate (1+ colon-pos))))
+    (string= hour minute)))
+
 ;; main processor
 
 (defun what-are-the-chances (predicate format)
@@ -74,3 +85,7 @@
 (what-are-the-chances '(four-equal) 'fmt12)
 (what-are-the-chances '(three-equal) 'fmt12)
 (what-are-the-chances '(two-equal) 'fmt12)
+(what-are-the-chances '(palindom) 'fmt24)
+(what-are-the-chances '(palindom) 'fmt12)
+(what-are-the-chances '(repeating) 'fmt24)
+(what-are-the-chances '(repeating) 'fmt12)
