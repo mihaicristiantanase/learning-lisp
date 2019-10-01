@@ -30,17 +30,27 @@
 ;; predicates
 
 (defun perfect-match (val candidate tfs)
+  (declare (ignore tfs))
   (string= val candidate))
 
 (defun later-than (val candidate tfs)
   (< (position val tfs :test #'string=)
      (position candidate tfs :test #'string=)))
 
+(defun n-equal (n candidate tfs)
+  (declare (ignore tfs))
+  (let* ((digits (coerce (remove #\: candidate) 'list))
+         (freqs (mapcar #'(lambda (x) (count x digits)) digits)))
+    (some (lambda (x) (>= x n)) freqs)))
+
 (defun four-equal (candidate tfs)
-  (let ((first-char (aref candidate 0)))
-    (every (lambda (x)
-             (equal x first-char))
-           (remove #\: candidate))))
+  (n-equal 4 candidate tfs))
+
+(defun three-equal (candidate tfs)
+  (n-equal 3 candidate tfs))
+
+(defun two-equal (candidate tfs)
+  (n-equal 2 candidate tfs))
 
 ;; main processor
 
@@ -51,7 +61,7 @@
          (items (remove-if-not
                   (lambda (x) (apply fun (append fun-args (list x tfs))))
                   tfs)))
-    (format t "items = ~a" items)
+    (format t "items:~&~{~a ~}" items)
     (length items)))
 
 ;; tests
@@ -59,3 +69,8 @@
 (what-are-the-chances '(perfect-match "01:59") 'fmt12)
 (what-are-the-chances '(later-than "23:58") 'fmt24)
 (what-are-the-chances '(four-equal) 'fmt24)
+(what-are-the-chances '(three-equal) 'fmt24)
+(what-are-the-chances '(two-equal) 'fmt24)
+(what-are-the-chances '(four-equal) 'fmt12)
+(what-are-the-chances '(three-equal) 'fmt12)
+(what-are-the-chances '(two-equal) 'fmt12)
