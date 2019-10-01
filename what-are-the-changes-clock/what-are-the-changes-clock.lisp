@@ -65,6 +65,11 @@
 
 ;; main processor
 
+(defun print-times (times)
+  (dotimes (i (length times))
+    (when (zerop (mod i 16)) (format t "~&"))
+    (format t "~a " (nth i times))))
+
 (defun what-are-the-chances (predicate format)
   (let* ((fun (first predicate))
          (fun-args (rest predicate))
@@ -72,8 +77,9 @@
          (items (remove-if-not
                   (lambda (x) (apply fun (append fun-args (list x tfs))))
                   tfs)))
-    (format t "items:~&~{~a ~}" items)
-    (length items)))
+    (print-times items)
+    (format t "~&count ~d" (length items))
+    (format t "~&percentage: ~,2f%" (* (/ (length items) (length tfs)) 100))))
 
 ;; tests
 
