@@ -29,11 +29,11 @@
 
 ;; predicates
 
-(defun perfect-match (val candidate tfs)
+(defun pred-perfect-match (val candidate tfs)
   (declare (ignore tfs))
   (string= val candidate))
 
-(defun later-than (val candidate tfs)
+(defun pred-later-than (val candidate tfs)
   (< (position val tfs :test #'string=)
      (position candidate tfs :test #'string=)))
 
@@ -43,20 +43,20 @@
          (freqs (mapcar #'(lambda (x) (count x digits)) digits)))
     (some (lambda (x) (>= x n)) freqs)))
 
-(defun four-equal (candidate tfs)
+(defun pred-four-equal (candidate tfs)
   (n-equal 4 candidate tfs))
 
-(defun three-equal (candidate tfs)
+(defun pred-three-equal (candidate tfs)
   (n-equal 3 candidate tfs))
 
-(defun two-equal (candidate tfs)
+(defun pred-two-equal (candidate tfs)
   (n-equal 2 candidate tfs))
 
-(defun palindom (candidate tfs)
+(defun pred-palindom (candidate tfs)
   (declare (ignore tfs))
   (string= candidate (reverse candidate)))
 
-(defun repeating (candidate tfs)
+(defun pred-repeating (candidate tfs)
   (declare (ignore tfs))
   (let* ((colon-pos (position #\: candidate))
          (hour (subseq candidate 0 colon-pos))
@@ -83,15 +83,15 @@
 
 ;; tests
 
-(what-are-the-chances '(perfect-match "01:59") 'fmt12)
-(what-are-the-chances '(later-than "23:58") 'fmt24)
-(what-are-the-chances '(four-equal) 'fmt24)
-(what-are-the-chances '(three-equal) 'fmt24)
-(what-are-the-chances '(two-equal) 'fmt24)
-(what-are-the-chances '(four-equal) 'fmt12)
-(what-are-the-chances '(three-equal) 'fmt12)
-(what-are-the-chances '(two-equal) 'fmt12)
-(what-are-the-chances '(palindom) 'fmt24)
-(what-are-the-chances '(palindom) 'fmt12)
-(what-are-the-chances '(repeating) 'fmt24)
-(what-are-the-chances '(repeating) 'fmt12)
+(what-are-the-chances '(pred-perfect-match "01:59") 'fmt12)
+(what-are-the-chances '(pred-four-equal) 'fmt12)
+(what-are-the-chances '(pred-three-equal) 'fmt12)
+(what-are-the-chances '(pred-two-equal) 'fmt12)
+(what-are-the-chances '(pred-palindom) 'fmt12)
+(what-are-the-chances '(pred-repeating) 'fmt12)
+(what-are-the-chances '(pred-later-than "23:58") 'fmt24)
+(what-are-the-chances '(pred-four-equal) 'fmt24)
+(what-are-the-chances '(pred-three-equal) 'fmt24)
+(what-are-the-chances '(pred-two-equal) 'fmt24)
+(what-are-the-chances '(pred-palindom) 'fmt24)
+(what-are-the-chances '(pred-repeating) 'fmt24)
