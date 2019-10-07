@@ -88,6 +88,7 @@
 
 ;; tests
 
+(what-are-the-chances '(pred-later-than "12:56") 'fmt12)
 (what-are-the-chances '(pred-perfect-match "01:59") 'fmt12)
 (what-are-the-chances '(pred-four-equal) 'fmt12)
 (what-are-the-chances '(pred-three-equal) 'fmt12)
@@ -95,7 +96,9 @@
 (what-are-the-chances '(pred-palindom) 'fmt12)
 (what-are-the-chances '(pred-repeating) 'fmt12)
 (what-are-the-chances '(pred-double-on-hand) 'fmt12)
+
 (what-are-the-chances '(pred-later-than "23:58") 'fmt24)
+(what-are-the-chances '(pred-perfect-match "01:59") 'fmt24)
 (what-are-the-chances '(pred-four-equal) 'fmt24)
 (what-are-the-chances '(pred-three-equal) 'fmt24)
 (what-are-the-chances '(pred-two-equal) 'fmt24)
