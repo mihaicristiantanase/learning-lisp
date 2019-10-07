@@ -63,6 +63,11 @@
          (minute (subseq candidate (1+ colon-pos))))
     (string= hour minute)))
 
+(defun pred-double-on-hand (candidate tfs)
+  (declare (ignore tfs))
+  (and (equal (aref candidate 0) (aref candidate 1))
+       (equal (aref candidate 3) (aref candidate 4))))
+
 ;; main processor
 
 (defun print-times (times)
@@ -89,9 +94,11 @@
 (what-are-the-chances '(pred-two-equal) 'fmt12)
 (what-are-the-chances '(pred-palindom) 'fmt12)
 (what-are-the-chances '(pred-repeating) 'fmt12)
+(what-are-the-chances '(pred-double-on-hand) 'fmt12)
 (what-are-the-chances '(pred-later-than "23:58") 'fmt24)
 (what-are-the-chances '(pred-four-equal) 'fmt24)
 (what-are-the-chances '(pred-three-equal) 'fmt24)
 (what-are-the-chances '(pred-two-equal) 'fmt24)
 (what-are-the-chances '(pred-palindom) 'fmt24)
 (what-are-the-chances '(pred-repeating) 'fmt24)
+(what-are-the-chances '(pred-double-on-hand) 'fmt24)
