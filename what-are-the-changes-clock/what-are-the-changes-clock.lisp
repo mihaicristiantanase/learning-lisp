@@ -68,6 +68,10 @@
   (and (equal (aref candidate 0) (aref candidate 1))
        (equal (aref candidate 3) (aref candidate 4))))
 
+(defun pred-sharp (candidate tfs)
+  (declare (ignore tfs))
+  (string= "00" (subseq candidate 3)))
+
 ;; main processor
 
 (defun print-times (times)
@@ -99,4 +103,5 @@
     (what-are-the-chances '(pred-two-equal) fmt)
     (what-are-the-chances '(pred-palindom) fmt)
     (what-are-the-chances '(pred-repeating) fmt)
-    (what-are-the-chances '(pred-double-on-hand) fmt)))
+    (what-are-the-chances '(pred-double-on-hand) fmt)
+    (what-are-the-chances '(pred-sharp) fmt)))
