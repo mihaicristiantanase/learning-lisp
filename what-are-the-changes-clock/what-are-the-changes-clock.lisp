@@ -105,3 +105,18 @@
     (what-are-the-chances '(pred-repeating) fmt)
     (what-are-the-chances '(pred-double-on-hand) fmt)
     (what-are-the-chances '(pred-sharp) fmt)))
+
+;; TODO (mihai): fix this)
+;; draw the probability histogram
+;; |
+;; |    Situation      : ------------------------------------------------------- (100%)
+;; |    Later Than     : ==========================
+;; |    Perfect Match  : =====================
+;; |    Four Equal     : =====================
+;; |    Three Equal    : =========================
+;; |    Two Equal      : ====================
+;; |    Palindom       : ==============
+;; |    Repeating      : ==========================
+;; |    Double On Hand : ======
+;; |    Sharp          : ==============
+;; |
