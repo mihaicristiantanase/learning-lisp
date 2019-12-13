@@ -23,16 +23,13 @@
 (defun show-durations (csv)
   (show-durations-rec (parse csv)))
 
-(let ((csv '("1576076971.132421,startRegistrationTheOmyWay"
-             "1576076971.132947,fetchPassword"
-             "1576076994.611244,_orchestrator startActivation,I set the Pin here"
-             "1576077004.009452,onActivationStepCompleteWithCommand"
-             "1576077004.009578,sendCommandToServer"
-             "1576077006.801086,onActivationStepCompleteWithCommand"
-             "1576077006.801268,sendCommandToServer"
-             "1576077007.986912,onActivationStepCompleteWithCommand"
-             "1576077007.987056,sendCommandToServer"
-             "1576077010.061297,onActivationStepCompleteWithCommand"
-             "1576077010.061423,sendCommandToServer"
-             "1576077027.631398,onActivationSuccess")))
-  (show-durations csv))
+(defun get-file-contents (fname)
+  (with-open-file (s fname)
+    (do ((lines '())
+         (l (read-line s) (read-line s nil 'eof)))
+        ((eq l 'eof) lines)
+      (setf lines (append lines (list l))))))
+
+(defparameter fname "~/workspace/orange-money-ios/res/OneSpan/PinTesting/res/registration-profiling3.csv")
+
+(show-durations (rest (get-file-contents fname)))
