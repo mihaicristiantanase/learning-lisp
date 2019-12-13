@@ -1,7 +1,9 @@
 ;; Processes a CSV file and displays the duration of each action step
 ;; The format of an action (line) is: TIMESTAMP (SECONDS),ACTION,COMMENTS
 
-(ql:quickload "parse-float")
+(load "~/.sbclrc")
+(ql:quickload :parse-float)
+(ql:quickload :split-sequence)
 
 (defun parse-line (line)
   (let ((tokens (split-sequence:split-sequence #\, line)))
@@ -21,7 +23,8 @@
     (show-durations-rec (rest parsed-csv))))
 
 (defun show-durations (csv)
-  (show-durations-rec (parse csv)))
+  (show-durations-rec (parse csv))
+  (format t "~%"))
 
 (defun get-file-contents (fname)
   (with-open-file (s fname)
