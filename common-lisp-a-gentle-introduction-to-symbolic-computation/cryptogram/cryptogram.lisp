@@ -1,4 +1,5 @@
 ;; Decipher the cryptogram
+(declaim (optimize debug))
 
 (print "And we begin")
 
@@ -7,30 +8,62 @@
     "jupi jf enlpo pib slafml pvv bfwkj"))
 
 (defun decipher (encrypted decipher-table)
-  (if (null decipher-table)
-      encrypted
-      (let ((tuple (first decipher-table)))
-            (decipher (substitute (car tuple) (cdr tuple) encrypted)
-                      (rest decipher-table)))))
+  (dotimes (i (length encrypted))
+    (let* ((e-character (aref encrypted i))
+           (d-character (cdr (assoc e-character decipher-table)))
+           (printed-character (or d-character #\Space)))
+      (format t "~a" printed-character))))
 
 (defun display-status (encrypted decipher-table)
-  (format t "~&----------------------------------------")
+  (format t "~&---------------------------------------------------")
   (dolist (s encrypted)
     (format t "~&~a" s)
-    (format t "~&~a" (decipher s decipher-table)))
-  (format t "~&----------------------------------------"))
+    (format t "~&")
+    (decipher s decipher-table))
+  (format t "~&---------------------------------------------------")
+  (format t "~%"))
 
 (substitute  #\a #\b "ababbfb")
 
-(defun solve-locally (encrypted encipher-table decipher-table)
-  (let ((decipher-table '())
-        (encipher-table '()))
-    (display-status encrypted decipher-table)
-    (format t "~&Substitute which letter?")))
+(defun read-input (message)
+  (finish-output)
+  (format t "~&~a " message)
+  (labels ((read-until-something-useful ()
+             (finish-output)
+             (let ((line (read-line)))
+               (if (zerop (length line))
+                   (read-until-something-useful)
+                   line))))
+    (read-until-something-useful)))
+
+(defun read-character (message)
+  (finish-output)
+  (format t "~&~a " message)
+  (finish-output)
+  (read-char))
+
+(defun solve-locally (encrypted decipher-table)
+  (display-status encrypted decipher-table)
+  (let ((source-input (read-input "Substitute which letter?")))
+    (cond ((equal source-input "undo")
+           (solve-locally encrypted (remove (assoc
+                                              (read-character "Undo which character?")
+                                              decipher-table) decipher-table)))
+          ((equal source-input "quit")
+           (format t "~&Thank you for playing!"))
+          (t (let* ((source-character (aref source-input 0))
+                    (dest-character (read-character (format nil "What does '~a' decipher to?" source-character))))
+               (let ((e-existing (car (assoc source-character decipher-table)))
+                     (d-existing (car (rassoc dest-character decipher-table))))
+                 (cond (e-existing
+                        (format t "~&But '~a' already deciphers to '~a'!" source-character e-existing))
+                       (d-existing
+                        (format t "~&But '~a' already deciphers to '~a'!" d-existing dest-character))
+                       (t (push (cons source-character dest-character) decipher-table)))
+                 (solve-locally encrypted decipher-table)))))))
 
 (defun solve (encrypted)
-  (let ((encipher-table '())
-        (decipher-table '()))
-    (solve-locally encrypted encipher-table decipher-table)))
+  (let ((decipher-table '()))
+    (solve-locally encrypted decipher-table)))
 
 (solve *crypto-text*)
