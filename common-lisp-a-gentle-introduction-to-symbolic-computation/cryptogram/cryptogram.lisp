@@ -62,7 +62,19 @@
                        (t (push (cons source-character dest-character) decipher-table)))
                  (solve-locally encrypted decipher-table)))))))
 
+(defun show-frequencies (text)
+  (let ((dict '()))
+    (dotimes (i (length text))
+      (let ((character (aref text i)))
+        (when (null (cdr (assoc character dict)))
+          (push (cons character 0) dict))
+        (incf (cdr (assoc character dict)))))
+    (format t "~&The frequencies: ")
+    (let ((sorted (sort dict #'(lambda (x y) (> (cdr x) (cdr y))))))
+      (dolist (item sorted) (format t "~&~s" item)))))
+
 (defun solve (encrypted)
+  (show-frequencies (apply #'concatenate 'string encrypted))
   (let ((decipher-table '()))
     (solve-locally encrypted decipher-table)))
 
