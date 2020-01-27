@@ -90,3 +90,5 @@
       (exit))))
 
 (defun main () (run *posix-argv*))
+
+(main)
