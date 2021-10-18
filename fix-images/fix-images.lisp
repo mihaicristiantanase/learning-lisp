@@ -1,14 +1,15 @@
-;;; Process 'jpg' and 'heic' images
+;;; Process 'jpg', 'heic' and 'png' images
 ;;;
 ;;; Use lowercased extensions
 ;;; Fix image rotation
 ;;; Transform heic to jpg
-;;; Read image metadata and extract the real creation date
+;;; Read image metadata (using exiftool) and extract the real creation date
 
 (load "~/.sbclrc")
 (ql:quickload :cl-ppcre)
 
-(defparameter *extensions* '("jpeg" "jpg" "heic"))
+(defparameter *extensions* '("jpeg" "jpg" "heic" "png"))
+(defvar *fallback-timestamp* 0)
 
 (defmacro with-check (func-name &body body)
   `(labels ((check (condition &optional (error-message nil))
@@ -41,15 +42,13 @@
   (let ((last (cadr (uiop/utility:split-string line :separator '(#\:)))))
     (when last (string-trim '(#\Space) last))))
 
-(defparameter creation-date-scanner
-  (cl-ppcre:create-scanner "exif:DateTimeOriginal: (\\d+):(\\d+):(\\d+) (\\d+):(\\d+):(\\d+)"))
-
-(defun extract-creation-date (line)
-  (multiple-value-bind (_ match)
-      (cl-ppcre:scan-to-strings creation-date-scanner line)
-    (declare (ignore _))
-    (when match
-      (parse-integer (format nil "~{~a~}" (coerce match 'list))))))
+(defun list-min (lst)
+  (reduce #'min lst))
+   
+(defun extract-creation-date (lines)
+  (list-min (mapcar #'(lambda (line)
+                        (parse-integer (cadr (uiop/utility:split-string line :separator '(#\:)))))
+                    lines)))
 
 (defun valid-convert-response (output)
   (null output))
@@ -60,8 +59,8 @@
     (let* ((img (pathname f))
            (ext (pathname-type f))
            (img-new (make-pathname
-                         :defaults img
-                         :type (if (string-equal ext "jpeg") "jpg" (string-downcase ext)))))
+                     :defaults img
+                     :type (if (string-equal ext "jpeg") "jpg" (string-downcase ext)))))
       (when (not (equal img img-new)) (rename-file img img-new))))
   't)
 
@@ -70,16 +69,14 @@
   (with-check fix-orientation
     (dolist (img (list-images path))
       (let* ((imgname (file-namestring img))
-             (shell-output (run-shell "identify" "-verbose" (namestring img)))
-             (orientation-line (find-if
-                                 (lambda (line) (search "orientation" line :test #'string-equal))
-                                 shell-output))
-             (orientation (extract-orientation orientation-line)))
-        (check orientation (format nil "Could not obtain orientation of ~a" imgname))
-        (when (not (string-equal orientation "TopLeft" ))
+             (shell-output (run-shell "exiftool" "-Orientation" (namestring img)))
+             (orientation (extract-orientation (car shell-output))))
+        (when (not orientation)
+          (format t "~&Could not obtain orientation of ~a. Skipping orientation for this one." imgname))
+        (when (and orientation (not (string-equal orientation "Horizontal (normal)")))
           (format t "~&Fixing orientation for ~a having ~a~%" imgname orientation)
           (check (valid-convert-response
-                   (run-shell "convert" (namestring img) "-auto-orient" (namestring img)))
+                  (run-shell "convert" (namestring img) "-auto-orient" (namestring img)))
                  (format nil "Could not fix orientation of ~a" imgname))))))
   't)
 
@@ -87,8 +84,8 @@
   (format t "~&> Convert HEIC~%")
   (with-check convert-heic
     (dolist (img (remove-if-not
-                   (lambda (img) (string-equal (pathname-type img) "heic"))
-                   (list-images path)))
+                  (lambda (img) (string-equal (pathname-type img) "heic"))
+                  (list-images path)))
       (let* ((imgname (file-namestring img))
              (img-new (make-pathname :defaults img :type "jpg"))
              (shell-output (run-shell "convert" (namestring img) (namestring img-new))))
@@ -102,12 +99,12 @@
     (let ((dates '()))
       (dolist (img (list-images path))
         (let* ((imgname (file-namestring img))
-               (shell-output (run-shell "identify" "-verbose" (namestring img)))
-               (creation-date-line
-                 (find-if
-                   (lambda (line) (search "exif:DateTimeOriginal" line :test #'string-equal))
-                   shell-output))
-               (creation-date (extract-creation-date creation-date-line)))
+               (shell-output (run-shell "exiftool" "-d" "%s"
+                                        "-CreateDate"
+                                        "-FileModifyDate"
+                                        "-DateTimeOriginal"
+                                        (namestring img)))
+               (creation-date (or (extract-creation-date shell-output) *fallback-timestamp*)))
           (push (cons img creation-date) dates)
           (check creation-date (format nil "Could not obtain creation date of ~a" imgname))))
       dates)))
@@ -122,8 +119,8 @@
          (prefix (format nil "~5,'0d" (+ 1 (car indexed-img))))
          (suffix (if (search "DSC" img-name :test #'string=) "DSC" "IMG"))
          (img-new (make-pathname
-                    :defaults img
-                    :name (format nil "~a_~a" prefix suffix))))
+                   :defaults img
+                   :name (format nil "~a_~a" prefix suffix))))
     (cons (cdr indexed-img) img-new)))
 
 (defun compute-new-names (imgs)
@@ -135,8 +132,8 @@
   (format t "~&> Rename temporary to avoid name conflicts~%")
   (dolist (img (list-images path))
     (let* ((img-new (make-pathname
-                      :defaults img
-                      :name (format nil "__~a" (pathname-name img)))))
+                     :defaults img
+                     :name (format nil "__~a" (pathname-name img)))))
       (rename-file img img-new)))
   't)
 
@@ -159,11 +156,22 @@
     ((not (rename-to-match-time path)) (format t "~&[Error] rename-to-match-time~%"))
     ('t)))
 
+(defmacro last-char (str)
+  `(let ((idx (1- (length ,str))))
+     (when (>= idx 0)
+       (char ,str idx))))
+
+(defun add-tail-slash (path)
+  (let ((lc (last-char path)))
+    (if (and lc (not (eq #\/ lc)))
+        (format nil "~a/" path)
+        path)))
+
 (defun process-args (args)
   (cond
     ((not (equal (length args) 2))
      (format t "~&[Error] Should run as ~A <folder_images>.~%" (first args)))
-    ((not (process-imgs (cadr args)))
+    ((not (process-imgs (add-tail-slash (cadr args))))
      (format t "~&[Error] The processing was incomplete.~%"))
     ('t (format t "~&The processing was successful.~%"))))
 
