@@ -1,3 +1,8 @@
 .DS_Store
 .gitignore.swp
 *.swp
+fix-images/test/
+fix-images/test-orig/
+*~
+*#
+*.fasl
