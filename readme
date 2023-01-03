@@ -1,5 +1,5 @@
 INSTALLATION
----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 >> choose a platform from http://www.sbcl.org/platform-table.html
 $ cd Downloads/
 $ tar xjf sbcl-1.0.29-x86-darwin-binary-r2.tar.bz2
@@ -11,9 +11,26 @@ brew install rlwrap
 
 
 THE 99 PROBLEMS OF lISP:
----------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 URL: http://www.ic.unicamp.br/~meidanis/courses/mc336/2006s2/funcional/L-99_Ninety-Nine_Lisp_Problems.html
 
 --- to run the examples ---
 rlwrap sbcl --load <filename>
+
+
+CREATE A NEW PROJECT
+--------------------------------------------------------------------------------
+In REPL:
+
+(ql:quickload "quickproject")
+
+(quickproject:make-project #p"proj-name"
+                           :depends-on '(cl-who)
+                           :author "Mihai Cristian Tănase"
+                           :license "Mihai Cristian Tănase")
+
+;; local path
+(push "./" ql:*local-project-directories*)
+
+(asdf:load-system "proj-name")
