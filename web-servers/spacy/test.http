@@ -1,0 +1,8 @@
+#
+GET http://127.0.0.1:8008?text=Mih is here with Flo. She loves him. She is younger.
+
+#
+GET http://127.0.0.1:8008?text=What is going on with Romania?   Is anyone listening?
+
+#
+GET http://127.0.0.1:8008?text=To be or not to be Michael. Red, blue and green. I am green.
