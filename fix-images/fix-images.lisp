@@ -76,7 +76,7 @@
         (when (and orientation (not (string-equal orientation "Horizontal (normal)")))
           (format t "~&Fixing orientation for ~a having ~a~%" imgname orientation)
           (check (valid-convert-response
-                  (run-shell "convert" (namestring img) "-auto-orient" (namestring img)))
+                  (run-shell "magick" (namestring img) "-auto-orient" (namestring img)))
                  (format nil "Could not fix orientation of ~a" imgname))))))
   't)
 
@@ -88,7 +88,7 @@
                   (list-images path)))
       (let* ((imgname (file-namestring img))
              (img-new (make-pathname :defaults img :type "jpg"))
-             (shell-output (run-shell "convert" (namestring img) (namestring img-new))))
+             (shell-output (run-shell "magick" (namestring img) (namestring img-new))))
         (check (valid-convert-response shell-output)
                (format nil "Could not convert ~a" imgname))
         (delete-file img))))
