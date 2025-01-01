@@ -3,12 +3,13 @@
 ;;; Use lowercased extensions
 ;;; Fix image rotation
 ;;; Transform heic to jpg
+;;; Transform nef (raw image) to jpg
 ;;; Read image metadata (using exiftool) and extract the real creation date
 
 (load "~/.sbclrc")
 (ql:quickload :cl-ppcre)
 
-(defparameter *extensions* '("jpeg" "jpg" "heic" "png"))
+(defparameter *extensions* '("jpeg" "jpg" "heic" "png" "nef"))
 (defvar *fallback-timestamp* 0)
 
 (defmacro with-check (func-name &body body)
@@ -80,11 +81,11 @@
                  (format nil "Could not fix orientation of ~a" imgname))))))
   't)
 
-(defun convert-heic (path)
-  (format t "~&> Convert HEIC~%")
-  (with-check convert-heic
+(defun convert-to-jpg (path img-type)
+  (format t "~&> Convert ~:@(~a~) to JPG~%" img-type)
+  (with-check convert-to-jpg
     (dolist (img (remove-if-not
-                  (lambda (img) (string-equal (pathname-type img) "heic"))
+                  (lambda (img) (string-equal (pathname-type img) img-type))
                   (list-images path)))
       (let* ((imgname (file-namestring img))
              (img-new (make-pathname :defaults img :type "jpg"))
@@ -151,7 +152,8 @@
     ((not (valid-directory path)) (format t "~&[Error] valid-directory~%"))
     ((not (fix-extension path)) (format t "~&[Error] fix-extension~%"))
     ((not (fix-orientation path)) (format t "~&[Error] fix-orientation~%"))
-    ((not (convert-heic path)) (format t "~&[Error] convert-heic~%"))
+    ((not (convert-to-jpg path "heic")) (format t "~&[Error] convert-to-jpg heic~%"))
+    ((not (convert-to-jpg path "nef")) (format t "~&[Error] convert-to-jpg nef~%"))
     ((not (rename-temporary path)) (format t "~&[Error] rename-temporary~%"))
     ((not (rename-to-match-time path)) (format t "~&[Error] rename-to-match-time~%"))
     ('t)))
